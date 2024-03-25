@@ -1,0 +1,4 @@
+export const opTokenContract = '0x7736dF337A660B58b57D114e45C2327825fb6123'
+export const baseTokenContract = '0x3D82d3C85Dd36a660B7AA5dFdd02cC850cF35400'
+export const opBridgeContract = '0x4e228D691c5A5608EF05666924F9bC49a933D41F'
+export const baseBridgeContract = '0x3Ab9640a577331afb5df06EDbb09Da517a072be1'
