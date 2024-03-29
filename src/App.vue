@@ -40,8 +40,8 @@
         </div>
       </div>
       <p v-show="!metamaskIsInstalled || !isOptimismNetwork">{{ alertMessage }}</p>
-      <button class="btn" @click="authSrc">Auth source</button>
-      <button class="btn" @click="authDst" style="margin-top:20px;">Auth Destination</button>
+      <button disabled class="btn" @click="authSrc">Auth source(disabled)</button>
+      <button disabled class="btn" @click="authDst" style="margin-top:20px;">Auth Destination(disabled)</button>
     </div>
   </div>
 </template>
