@@ -22,7 +22,7 @@
           placeholder="Enter the amount you want to cross-chain.">
         <button class="bridge-confirm-btn btn" :disable="isLoading" @click="confirmDstBridge">Confirm</button>
       </div>
-      <div class="loading-wrap" v-show="isLoading">
+      <div class="loading-wrap" v-show="isLoading" style="color:#f00;">
         Loading...
       </div>
       <div class="chain-wrap">
@@ -40,8 +40,6 @@
         </div>
       </div>
       <p v-show="!metamaskIsInstalled || !isOptimismNetwork">{{ alertMessage }}</p>
-      <button disabled class="btn" @click="authSrc">Auth source(disabled)</button>
-      <button disabled class="btn" @click="authDst" style="margin-top:20px;">Auth Destination(disabled)</button>
     </div>
   </div>
 </template>
@@ -77,7 +75,7 @@ export default {
     }
   },
   async mounted() {
-    this.opWeb3 = new Web3('https://public.stackup.sh/api/v1/node/optimism-sepolia');
+    this.opWeb3 = new Web3('https://sepolia.optimism.io');
     this.baseWeb3 = new Web3('https://sepolia.base.org');
     if (typeof window.ethereum !== 'undefined') {
       this.metamaskIsInstalled = true;
@@ -103,34 +101,9 @@ export default {
       //alert('Please install MetaMask!');
     }
 
-
-    this.addBridgeListener()
-    this.addMWListener()
   },
   methods: {
-    addBridgeListener() {
-      const opWeb3 = new Web3('https://public.stackup.sh/api/v1/node/optimism-sepolia');
-      const baseWeb3 = new Web3('https://sepolia.base.org');
-      // base
-      const baseContract = new baseWeb3.eth.Contract(baseAbi, '0x285731907369c4c30f5578018441Dc3079CEa243');
-
-      baseContract.events.allEvents({
-        fromBlock: 'latest'
-      }, function (error, event) {
-        if (error) console.error(error);
-        console.log(event);
-      });
-
-      const opContract = new opWeb3.eth.Contract(opAbi, '0xc41f5f33D638762b6b823096CC573fdeaf9b1777');
-
-      opContract.events.allEvents({
-        fromBlock: 'latest'
-      }, function (error, event) {
-        if (error) console.error(error);
-        console.log(event);
-      });
-
-    },
+    
     async confirmSrcBridge() {
       console.log(this.bridgeSrcAmount)
       try {
@@ -209,10 +182,6 @@ export default {
       const result = num.multipliedBy(new BigNumber(10).pow(18));
       return result.toNumber();
     },
-    async addMWListener() {
-
-
-    },
     async onWalletConnect() {
       try {
         await window.ethereum.enable();
@@ -225,39 +194,6 @@ export default {
         console.error('connect wallet failed', error);
       }
 
-    },
-    async callContractMethod() {
-
-    },
-    async authSrc() {
-      try {
-        const web3 = new Web3(window.ethereum);
-        await window.ethereum.enable(); 
-        const accounts = await web3.eth.getAccounts(); 
-        const myAccount = accounts[0]; 
-        const c = new web3.eth.Contract(erc20Abi, opTokenContract);
-        const receipt = await c.methods.changeManager(
-          '0x4e228D691c5A5608EF05666924F9bC49a933D41F'
-        ).send({ from: myAccount });
-        console.log('auth src successful', receipt);
-      } catch (error) {
-        console.error('auth src contract failed', error);
-      }
-    },
-    async authDst() {
-      try {
-        const web3 = new Web3(window.ethereum);
-        await window.ethereum.enable(); 
-        const accounts = await web3.eth.getAccounts(); 
-        const myAccount = accounts[0]; 
-        const c = new web3.eth.Contract(erc20Abi, baseTokenContract);
-        const receipt = await c.methods.changeManager(
-          baseBridgeContract
-        ).send({ from: myAccount });
-        console.log('auth dst successful', receipt);
-      } catch (error) {
-        console.error('send dst contract failed', error);
-      }
     },
     async queryOpBalance() {
       try {
